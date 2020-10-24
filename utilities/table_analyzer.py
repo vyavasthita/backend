@@ -9,21 +9,37 @@ import os
 
 
 class Db2Analyzer():
+    def __init__(self):
+        self.output_path = None
+
+        self.file_1 = None
+        self.file_2 = None
+        self.file_3 = None
+        self.file_4 = None
+        self.file_5 = None
+
     def download_files(self):
+        import pathlib
+        root_path = pathlib.Path(__file__).parent.absolute()
+
+        input_path = os.path.join(root_path, 'input')
+        self.output_path = os.path.join(root_path, 'output')
+
         BUCKET_NAME = 'tablemetadata'  # replace with your bucket name
-        root_path = '/home/local/Documents/source_code/backend/utilities/input'
 
-        LOCAL_FILE_1 = 'TBQA2_ALL_TAB_COLUMN_DETAILS_10-15-2020.csv'
-        LOCAL_FILE_2 = 'TBQA2_ALL_TAB_DETAILS_10-15-2020.csv'
-        LOCAL_FILE_3 = 'TBQA2_ALL_TAB_FRGN_KEY_DETAILS_10-15-2020.csv'
-        LOCAL_FILE_4 = 'TBQA2_ALL_TAB_INDEX_DETAILS_10-15-2020.csv'
-        LOCAL_FILE_5 = 'TBQA2_ALL_TAB_PRMRY_KEY_DETAILS_10-15-2020.csv'
+        LOCAL_FILE_1 = 'TBQA2_ALL_TAB_DETAILS_10-15-2020.csv'
+        LOCAL_FILE_2 = 'TBQA2_ALL_TAB_PRMRY_KEY_DETAILS_10-15-2020.csv'
+        LOCAL_FILE_3 = 'TBQA2_ALL_TAB_INDEX_DETAILS_10-15-2020.csv'
+        LOCAL_FILE_4 = 'TBQA2_ALL_TAB_COLUMN_DETAILS_10-15-2020.csv'
+        LOCAL_FILE_5 = 'TBQA2_ALL_TAB_FRGN_KEY_DETAILS_10-15-2020.csv'
 
-        file_1 = os.path.join(root_path, LOCAL_FILE_1)
-        file_2 = os.path.join(root_path, LOCAL_FILE_2)
-        file_3 = os.path.join(root_path, LOCAL_FILE_3)
-        file_4 = os.path.join(root_path, LOCAL_FILE_4)
-        file_5 = os.path.join(root_path, LOCAL_FILE_5)
+
+
+        self.file_1 = os.path.join(input_path, LOCAL_FILE_1)
+        self.file_2 = os.path.join(input_path, LOCAL_FILE_2)
+        self.file_3 = os.path.join(input_path, LOCAL_FILE_3)
+        self.file_4 = os.path.join(input_path, LOCAL_FILE_4)
+        self.file_5 = os.path.join(input_path, LOCAL_FILE_5)
 
         AWS_S3_CREDS = {
             "aws_access_key_id": "AKIAIVMEG5M24AHF3FWA",  # os.getenv("AWS_ACCESS_KEY")
@@ -31,11 +47,11 @@ class Db2Analyzer():
         }
         s3_client = boto3.client('s3', **AWS_S3_CREDS)
 
-        s3_client.download_file(BUCKET_NAME, LOCAL_FILE_1, file_1)
-        s3_client.download_file(BUCKET_NAME, LOCAL_FILE_2, file_2)
-        s3_client.download_file(BUCKET_NAME, LOCAL_FILE_3, file_3)
-        s3_client.download_file(BUCKET_NAME, LOCAL_FILE_4, file_4)
-        s3_client.download_file(BUCKET_NAME, LOCAL_FILE_5, file_5)
+        s3_client.download_file(BUCKET_NAME, LOCAL_FILE_1, self.file_1)
+        s3_client.download_file(BUCKET_NAME, LOCAL_FILE_2, self.file_2)
+        s3_client.download_file(BUCKET_NAME, LOCAL_FILE_3, self.file_3)
+        s3_client.download_file(BUCKET_NAME, LOCAL_FILE_4, self.file_4)
+        s3_client.download_file(BUCKET_NAME, LOCAL_FILE_5, self.file_5)
 
     def db2_analyzer(self):
         """
@@ -45,17 +61,19 @@ class Db2Analyzer():
             json_dict = {}
             now = datetime.now()  # datetime object containing current date and time
             dt_string = now.strftime("%d-%m-%Y %H_%M_%S")  # dd-mm-YY H_M_S
-            f = open('/home/local/Documents/source_code/backend/utilities/output/db2_analyzer_%s.json' % dt_string, "a")  # create json file with append
-            url = '/home/local/Documents/source_code/backend/utilities/input/'
-            df_db2_table_details = pd.read_csv(url+'TBQA2_ALL_TAB_DETAILS_10-15-2020.csv',
+            json_name = 'db2_analyzer_%s.json' % dt_string
+            output_json = os.path.join(self.output_path, json_name)
+
+            f = open(output_json, "a")  # create json file with append
+            df_db2_table_details = pd.read_csv(self.file_1,
                                                skipinitialspace=True)  # skip whitespace in header
-            df_db2_primary_key = pd.read_csv(url+'TBQA2_ALL_TAB_PRMRY_KEY_DETAILS_10-15-2020.csv',
+            df_db2_primary_key = pd.read_csv(self.file_2,
                                              skipinitialspace=True)  # skip whitespace in header
-            df_db2_index = pd.read_csv(url+'TBQA2_ALL_TAB_INDEX_DETAILS_10-15-2020.csv',
+            df_db2_index = pd.read_csv(self.file_3,
                                        skipinitialspace=True)  # skip whitespace in header
-            df_db2_column = pd.read_csv(url+'TBQA2_ALL_TAB_COLUMN_DETAILS_10-15-2020.csv',
+            df_db2_column = pd.read_csv(self.file_4,
                                         skipinitialspace=True).dropna()  # skip whitespace in header
-            df_db2_foreign_key = pd.read_csv(url+'TBQA2_ALL_TAB_FRGN_KEY_DETAILS_10-15-2020.csv',
+            df_db2_foreign_key = pd.read_csv(self.file_5,
                                              skipinitialspace=True)  # skip whitespace in header
             for index, table in df_db2_table_details.iterrows():
                 table_name = table['TABLE_NAME']
@@ -134,4 +152,4 @@ class Db2Analyzer():
 # db2_analyzer()
 if __name__ == "__main__":
     db2_obj = Db2Analyzer()
-    db2_obj.db2_analyzer()
+    db2_obj.download_files()
