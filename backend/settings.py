@@ -25,7 +25,7 @@ SECRET_KEY = 'p59m#z_=@^3@8_7as%vph%*ui2w@)3tvh$3vubw_ye=d^3y7j)'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ec2-15-207-84-33.ap-south-1.compute.amazonaws.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'tableanalyzer'
 ]
 
 MIDDLEWARE = [

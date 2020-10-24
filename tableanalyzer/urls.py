@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from .views import table_analyzer
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('tableanalyzer.urls'))
+    path('table-analyzer', table_analyzer, name='table-analyzer')
 ]
