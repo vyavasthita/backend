@@ -54,6 +54,7 @@ class Db2Analyzer():
         """
         DB2 analyzer
         """
+        f = None
         try:
             json_dict = {}
             now = datetime.now()  # datetime object containing current date and time
