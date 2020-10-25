@@ -133,7 +133,7 @@ class Db2Analyzer():
                         "indexes": [index_dict],
                         "columns": columns,
                         "entity_relation": entity_relation}})
-            json.dump(json_dict, f, indent=4)  # indent with 4 tabs
+            json.dump(json_dict, self.file_object, indent=4)  # indent with 4 tabs
         except KeyError as ke:
             print("Column %s does not exist" % ke.args[0])
         except FileNotFoundError as fnf:
