@@ -142,10 +142,10 @@ class Db2Analyzer():
             print("--in Exception---", e)
         finally:
             print("The 'try except' is finished")
-            f_size = self.file_object.tell()  # get file size in bytes before closing the file
-            self.file_object.close()
-            if not f_size:
-                os.remove(self.file_object.name)  # removing the empty file to save disk space
+            # f_size = self.file_object.tell()  # get file size in bytes before closing the file
+            # self.file_object.close()
+            # if not f_size:
+            #     os.remove(self.file_object.name)  # removing the empty file to save disk space
         return True
 
 # db2_analyzer()
