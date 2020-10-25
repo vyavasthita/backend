@@ -1,7 +1,6 @@
 import pandas as pd
 import boto3
-import botocore
-
+import pathlib
 import json
 from datetime import datetime
 import random
@@ -19,7 +18,7 @@ class Db2Analyzer():
         self.file_5 = None
 
     def download_files(self):
-        import pathlib
+
         root_path = pathlib.Path(__file__).parent.absolute()
 
         input_path = os.path.join(root_path, 'input')
@@ -32,8 +31,6 @@ class Db2Analyzer():
         LOCAL_FILE_3 = 'TBQA2_ALL_TAB_INDEX_DETAILS_10-15-2020.csv'
         LOCAL_FILE_4 = 'TBQA2_ALL_TAB_COLUMN_DETAILS_10-15-2020.csv'
         LOCAL_FILE_5 = 'TBQA2_ALL_TAB_FRGN_KEY_DETAILS_10-15-2020.csv'
-
-
 
         self.file_1 = os.path.join(input_path, LOCAL_FILE_1)
         self.file_2 = os.path.join(input_path, LOCAL_FILE_2)
@@ -64,7 +61,7 @@ class Db2Analyzer():
             json_name = 'db2_analyzer_%s.json' % dt_string
             output_json = os.path.join(self.output_path, json_name)
 
-            f = open(output_json, "a")  # create json file with append
+            f = open(output_json, "a")  # create json file with appendba
             df_db2_table_details = pd.read_csv(self.file_1,
                                                skipinitialspace=True)  # skip whitespace in header
             df_db2_primary_key = pd.read_csv(self.file_2,
