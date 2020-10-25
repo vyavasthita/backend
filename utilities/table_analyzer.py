@@ -17,6 +17,8 @@ class Db2Analyzer():
         self.file_4 = None
         self.file_5 = None
 
+        self.file_object = None
+
     def download_files(self):
 
         root_path = pathlib.Path(__file__).parent.absolute()
@@ -54,7 +56,6 @@ class Db2Analyzer():
         """
         DB2 analyzer
         """
-        f = None
         try:
             json_dict = {}
             now = datetime.now()  # datetime object containing current date and time
@@ -62,7 +63,7 @@ class Db2Analyzer():
             json_name = 'db2_analyzer_%s.json' % dt_string
             output_json = os.path.join(self.output_path, json_name)
 
-            f = open(output_json, "a")  # create json file with appendba
+            self.file_object = open(output_json, "a")  # create json file with appendba
             df_db2_table_details = pd.read_csv(self.file_1,
                                                skipinitialspace=True)  # skip whitespace in header
             df_db2_primary_key = pd.read_csv(self.file_2,
@@ -141,10 +142,10 @@ class Db2Analyzer():
             print("--in Exception---", e)
         finally:
             print("The 'try except' is finished")
-            f_size = f.tell()  # get file size in bytes before closing the file
-            f.close()
+            f_size = self.file_object.tell()  # get file size in bytes before closing the file
+            self.file_object.close()
             if not f_size:
-                os.remove(f.name)  # removing the empty file to save disk space
+                os.remove(self.file_object.name)  # removing the empty file to save disk space
         return True
 
 # db2_analyzer()
